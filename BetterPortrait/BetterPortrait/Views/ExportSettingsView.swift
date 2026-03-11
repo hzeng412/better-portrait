@@ -80,6 +80,34 @@ struct ExportSettingsView: View {
                 .padding(.vertical, 14)
             }
 
+            Spacer()
+
+            Divider()
+                .padding(.horizontal, 12)
+
+            // About
+            VStack(alignment: .leading, spacing: 4) {
+                Text("BetterPortrait v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.primary)
+
+                Text("Made by Haochen Zeng")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
+                Button {
+                    if let url = URL(string: "https://x.com/hzeng412") {
+                        NSWorkspace.shared.open(url)
+                    }
+                } label: {
+                    Text("@hzeng412")
+                        .font(.caption2)
+                        .foregroundStyle(.blue)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
         }
         .frame(width: 220)
         .background(.ultraThinMaterial)

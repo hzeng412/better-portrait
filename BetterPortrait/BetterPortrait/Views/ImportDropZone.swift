@@ -23,12 +23,24 @@ struct ImportDropZone: View {
             }
 
             VStack(spacing: 6) {
+                Text("BetterPortrait")
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(.primary)
+
+                Text("Batch-process portrait photos with automatic face detection, uniform cropping, and background replacement.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 400)
+            }
+
+            VStack(spacing: 4) {
                 Text("Drop portrait photos here")
-                    .font(.title3.weight(.medium))
+                    .font(.body.weight(.medium))
                     .foregroundStyle(.primary)
 
                 Text("or")
-                    .font(.subheadline)
+                    .font(.caption)
                     .foregroundStyle(.tertiary)
             }
 
