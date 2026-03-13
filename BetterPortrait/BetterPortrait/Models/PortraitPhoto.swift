@@ -76,6 +76,12 @@ enum SizingMode: String, CaseIterable, Identifiable {
     }
 }
 
+enum BackgroundMode: Equatable {
+    case solidColor
+    case transparent
+    case image(URL)
+}
+
 struct PortraitPhoto: Identifiable {
     let id = UUID()
     let originalURL: URL

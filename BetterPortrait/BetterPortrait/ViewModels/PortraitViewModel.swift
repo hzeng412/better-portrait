@@ -13,6 +13,8 @@ enum ProcessingPhase: Equatable {
 final class PortraitViewModel: ObservableObject {
     @Published var photos: [PortraitPhoto] = []
     @Published var backgroundColor: Color = .white
+    @Published var backgroundMode: BackgroundMode = .solidColor
+    @Published var backgroundImageURL: URL?
     @Published var selectedAspectRatio: AspectRatioPreset = .square
     @Published var selectedSizingMode: SizingMode = .bestFit
     @Published var isProcessing = false
@@ -64,6 +66,13 @@ final class PortraitViewModel: ObservableObject {
         exportMessage = nil
 
         let bgColor = NSColor(backgroundColor).cgColor
+        let bgMode = backgroundMode
+        let bgImageCG: CGImage? = {
+            if case .image(let url) = bgMode {
+                return CGImage.from(url: url)
+            }
+            return nil
+        }()
         let ratio = selectedAspectRatio.ratio
         let sizingMode = selectedSizingMode
         let total = photos.count
@@ -154,10 +163,19 @@ final class PortraitViewModel: ObservableObject {
 
                 let result: Result<CGImage, Error> = await Task.detached {
                     do {
-                        let composited = try self.backgroundRemoval.removeAndComposite(
-                            image: cropped,
-                            backgroundColor: bgColor
-                        )
+                        let composited: CGImage
+                        switch bgMode {
+                        case .transparent:
+                            composited = try self.backgroundRemoval.removeAndCompositeTransparent(image: cropped)
+                        case .image(_):
+                            if let bgImg = bgImageCG {
+                                composited = try self.backgroundRemoval.removeAndComposite(image: cropped, backgroundImage: bgImg)
+                            } else {
+                                composited = try self.backgroundRemoval.removeAndComposite(image: cropped, backgroundColor: bgColor)
+                            }
+                        case .solidColor:
+                            composited = try self.backgroundRemoval.removeAndComposite(image: cropped, backgroundColor: bgColor)
+                        }
                         return .success(composited)
                     } catch {
                         return .failure(error)
@@ -231,6 +249,18 @@ final class PortraitViewModel: ObservableObject {
             exportMessage = "Export error: \(error.localizedDescription)"
             exportedDirectory = nil
         }
+    }
+
+    func pickBackgroundImage() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.allowedContentTypes = [.image]
+        panel.message = "Choose a background image"
+
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        backgroundImageURL = url
+        backgroundMode = .image(url)
     }
 
     func removePhoto(_ photo: PortraitPhoto) {
