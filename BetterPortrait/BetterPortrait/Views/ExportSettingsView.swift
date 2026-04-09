@@ -172,7 +172,7 @@ struct ExportSettingsView: View {
                     }
 
                     // Sizing mode
-                    settingsSection(title: "Sizing", icon: "person.2.crop.square.stack.fill") {
+                    settingsSection(title: "Face Sizing", icon: "person.2.crop.square.stack.fill") {
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(SizingMode.allCases) { mode in
                                 radioRow(
@@ -180,6 +180,20 @@ struct ExportSettingsView: View {
                                     selected: viewModel.selectedSizingMode == mode
                                 ) {
                                     viewModel.selectedSizingMode = mode
+                                }
+                            }
+                        }
+                    }
+
+                    // Max export size
+                    settingsSection(title: "Max Width & Height", icon: "arrow.down.right.and.arrow.up.left") {
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(MaxSizePreset.allCases) { preset in
+                                radioRow(
+                                    label: preset.rawValue,
+                                    selected: viewModel.selectedMaxSize == preset
+                                ) {
+                                    viewModel.selectedMaxSize = preset
                                 }
                             }
                         }

@@ -82,6 +82,26 @@ enum BackgroundMode: Equatable {
     case image(URL)
 }
 
+enum MaxSizePreset: String, CaseIterable, Identifiable {
+    case unlimited = "Unlimited"
+    case px400 = "400 px"
+    case px800 = "800 px"
+    case px1200 = "1200 px"
+    case px2048 = "2048 px"
+
+    var id: String { rawValue }
+
+    var maxPixels: Int? {
+        switch self {
+        case .unlimited: return nil
+        case .px400: return 400
+        case .px800: return 800
+        case .px1200: return 1200
+        case .px2048: return 2048
+        }
+    }
+}
+
 struct PortraitPhoto: Identifiable {
     let id = UUID()
     let originalURL: URL

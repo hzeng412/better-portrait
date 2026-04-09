@@ -17,6 +17,7 @@ final class PortraitViewModel: ObservableObject {
     @Published var backgroundImageURL: URL?
     @Published var selectedAspectRatio: AspectRatioPreset = .square
     @Published var selectedSizingMode: SizingMode = .bestFit
+    @Published var selectedMaxSize: MaxSizePreset = .unlimited
     @Published var isProcessing = false
     @Published var exportMessage: String?
     @Published var exportedDirectory: URL?
@@ -217,7 +218,7 @@ final class PortraitViewModel: ObservableObject {
 
         guard panel.runModal() == .OK, let directory = panel.url else { return }
 
-        let toExport: [(filename: String, image: CGImage)]
+        var toExport: [(filename: String, image: CGImage)]
         if processedOnly {
             toExport = photos.compactMap { photo -> (filename: String, image: CGImage)? in
                 guard let processed = photo.processedImage else { return nil }
@@ -233,16 +234,22 @@ final class PortraitViewModel: ObservableObject {
         let existing = exportService.existingFiles(for: toExport, in: directory)
         if !existing.isEmpty {
             let alert = NSAlert()
-            alert.messageText = "Overwrite existing files?"
-            alert.informativeText = "\(existing.count) file\(existing.count == 1 ? "" : "s") already exist\(existing.count == 1 ? "s" : "") in this folder and will be replaced."
+            alert.messageText = "Some files already exist"
+            alert.informativeText = "\(existing.count) file\(existing.count == 1 ? "" : "s") already exist\(existing.count == 1 ? "s" : "") in this folder."
             alert.alertStyle = .warning
-            alert.addButton(withTitle: "Replace")
+            alert.addButton(withTitle: "Replace All")
+            alert.addButton(withTitle: "Skip Existing")
             alert.addButton(withTitle: "Cancel")
-            guard alert.runModal() == .alertFirstButtonReturn else { return }
+            let response = alert.runModal()
+            if response == .alertThirdButtonReturn { return }
+            if response == .alertSecondButtonReturn {
+                let existingSet = Set(existing)
+                toExport = toExport.filter { !existingSet.contains("\($0.filename).png") }
+            }
         }
 
         do {
-            let urls = try exportService.exportAll(photos: toExport, to: directory)
+            let urls = try exportService.exportAll(photos: toExport, to: directory, maxSize: selectedMaxSize.maxPixels)
             exportMessage = "Exported \(urls.count) photos"
             exportedDirectory = directory
         } catch {
