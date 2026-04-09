@@ -4,6 +4,24 @@
     <title>BetterPortrait Updates</title>
     <language>en</language>
     <item>
+      <title>Version 1.2</title>
+      <sparkle:version>3</sparkle:version>
+      <sparkle:shortVersionString>1.2</sparkle:shortVersionString>
+      <description><![CDATA[
+        <ul>
+          <li>Max Width &amp; Height export setting to cap image dimensions (400, 800, 1200, or 2048 px)</li>
+          <li>Skip existing files option when exporting to a folder with existing files</li>
+          <li>Renamed "Sizing" to "Face Sizing" for clarity</li>
+        </ul>
+      ]]></description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 +0000</pubDate>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/hzeng412/better-portrait/releases/download/v1.2/BetterPortrait-1.2.dmg"
+                 sparkle:edSignature="1ZseBYZvZjaqgXG09Q/XPrxJ7ToFa04wlKJfI2x9SA7S1n6GFMZKFFtXjtOp7kAEnH1xfwqC+9oiAEYUDIStBA=="
+                 length="6105368"
+                 type="application/octet-stream" />
+    </item>
+    <item>
       <title>Version 1.1</title>
       <sparkle:version>2</sparkle:version>
       <sparkle:shortVersionString>1.1</sparkle:shortVersionString>
